@@ -27,12 +27,21 @@ app.get("/bookings/:id", function(request, response) {
     response.sendStatus(404);
 });
 
+function validRequest(item) {
+  return ("id" in item && "title" in item && "firstName" in item && "surname" in item && "email" in item 
+    && "roomId" in item && "checkInDate" in item && "checkOutDate" in item);
+}
+
 app.post("/bookings", function(request, response) {
   let newBooking = request.body;
   newBooking.id = ++nextId;
 
-  bookings.push(newBooking);
-  response.status(201).send(newBooking);
+  if(validRequest(newBooking)) {
+    bookings.push(newBooking);
+    response.status(201).send(newBooking);
+  }
+  else 
+    response.sendStatus(400);
 });
 
 app.delete("/bookings/:id", function(request, response) {
